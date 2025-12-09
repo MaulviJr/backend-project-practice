@@ -1,0 +1,16 @@
+{
+  "name": "backend-practice",
+  "version": "1.0.0",
+  "description": "starting backend learning from hitesh chai aur code",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "js",
+    "javascript",
+    "backend"
+  ],
+  "author": "hadi",
+  "license": "ISC"
+}
