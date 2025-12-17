@@ -6,12 +6,12 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
 const registerUser= asyncHandler(async (req,res)=>{
-    res.status(200).json({
-        message:"Hello!",
-    })
+    // res.status(200).json({
+    //     message:"Hello!",
+    // })
 
 const {fullName,email,username,password} = req.body
-console.log("email", email);
+console.log("req.body ", req.body);
 
 
 // condition to check if any of the field is empty.
@@ -23,7 +23,7 @@ if(
 
 // more validations to be imposed.
 
-const existingUser=User.findOne({
+const existingUser= await User.findOne({
     $or: [{username},{email}]
 });
 
@@ -31,17 +31,19 @@ const existingUser=User.findOne({
         throw new ApiError(409,"The username or email already exists")
     }
 
+    console.log("checking existing user", existingUser);
+
     const avatarLocalPath = req.files?.avatar[0]?.path
     const coverImageLocalPath = req.files?.coverImage[0]?.path
-    console.log(req.files);
-
+    console.log("checking req.files",req.files);
+    console.log("avatar local path: ", avatarLocalPath)
     if(!avatarLocalPath) {
         throw new ApiError(409,"Avatar not found")
     }
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
-
+    console.log("avatar Url print",  avatar?.url)
     if(!avatar) {
         throw new ApiError(400,"Avatar is missing");
     }
