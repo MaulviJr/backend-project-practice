@@ -8,7 +8,7 @@ cloudinary.config({
 
 export default cloudinary;
 
-const uploadOnCloudinary = async (localFilePath)=>{
+export const uploadOnCloudinary = async (localFilePath)=>{
     try {
       const response =  cloudinary.uploader.upload(localFile,{
     resource_type:"auto"
@@ -20,4 +20,6 @@ const uploadOnCloudinary = async (localFilePath)=>{
         // remove the temp file in public
     }
 }
+
+
 
