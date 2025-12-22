@@ -1,11 +1,14 @@
 import jwt from "jsonwebtoken";
-import { asyncHandler } from "../utils/asyncHandler";
-import { ApiError } from "../utils/ApiError";
-import { User } from "../models/user.model";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { User } from "../models/user.model.js";
 
 
 const verifyJWT = asyncHandler(async(req,_,next)=>{
-    const token = await req.cookie?.accessToken|| req.header("Authorization").replace("Bearer ", "");    
+
+//     console.log("cookies:", req.cookies);
+// console.log("auth header:", req.headers.authorization);
+    const token = await req.cookies?.AccessToken|| req.header("Authorization")?.replace("Bearer ", "");    
     if(!token) {
         throw new ApiError(400,"token not found");
     }
