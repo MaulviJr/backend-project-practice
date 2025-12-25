@@ -30,5 +30,13 @@ const uploadOnCloudinary = async (localFilePath)=>{
     }
 }
 
+const deleteOnCloudinary=async(oldFileUrl)=>{
+    if(!oldFileUrl) {
+      throw new ApiError(400,"No Url Provided");
+    }
+
+    
+}
+
 
 export {uploadOnCloudinary}
