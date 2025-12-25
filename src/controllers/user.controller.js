@@ -358,7 +358,7 @@ const updateCoverImage = asyncHandler(async (req, res) => {
 
 })
 
-const channelDetails = asyncHandler(async (req, res) => {
+const getChannelDetails = asyncHandler(async (req, res) => {
 
     const { username } = req.params
 
@@ -505,6 +505,6 @@ export {
     updateAvatar,
     updateCoverImage,
     getCurrentUser,
-    channelDetails,
+    getChannelDetails,
     getWatchHistory
 };
