@@ -5,6 +5,7 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt, { decode } from 'jsonwebtoken'
+import mongoose from "mongoose";
 
 const registerUser = asyncHandler(async (req, res) => {
     // res.status(200).json({
@@ -77,10 +78,13 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const generateAccessAndRefreshTokens = async (userId) => {
     try {
+    
         const user = await User.findById(userId);
-
-        const accessToken = user.generateAccessToken();
-        const refreshToken = user.generateRefreshToken();
+        
+        const accessToken =  user.generateAccessToken();
+        const refreshToken =  user.generateRefreshToken();
+     
+        
 
         user.refreshToken = refreshToken;
         user.save({ validateBeforeCheck: false });
@@ -182,7 +186,8 @@ const logoutUser = asyncHandler(async (req, res) => {
 })
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-    const incomingRefreshToken = await req.cookies?.refreshToken
+    const incomingRefreshToken = await req.cookies?.RefreshToken
+    // console.log("req.cookies: ", req.cookies)
 
     if (!incomingRefreshToken) {
         throw new ApiError(401, "token not found");
@@ -194,7 +199,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         throw new ApiError(401, "Token coudln't verify")
     }
 
-    const user = User.findById(decodedToken?._id);
+    const user = await User.findById(decodedToken?._id);
 
     if (!user) {
         throw new ApiError("user unauthorized");
@@ -205,18 +210,18 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         httpOnly: true,
         secure: true
     }
-
-    const { accessToken, newRefreshToken } = await generateAccessAndRefreshTokens()
-
+    
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id)
+   
     return res.status(200)
-        .cookies("AccessToken", accessToken, options)
-        .cookies("RefreshToken", newRefreshToken, options)
+        .cookie("AccessToken", accessToken, options)
+        .cookie("RefreshToken", refreshToken, options)
         .json(
             new ApiResponse(
                 200,
                 {
                     accessToken,
-                    refreshToken: newRefreshToken
+                    refreshToken: refreshToken
                 },
                 "AccessToken Refreshed"
             )
@@ -250,8 +255,12 @@ const changeUserPassword = asyncHandler(async (req, res) => {
 })
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-    return res.status(200)
-        .json(200, req.user, "Current user fetch successfully")
+    
+    return res.status(200).json(
+        new ApiResponse (
+            200, req.user, "Current user fetch successfully"
+        )
+        )
 
 
 })
@@ -418,7 +427,7 @@ const getChannelDetails = asyncHandler(async (req, res) => {
                 username: 1,
                 subscribersCount: 1,
                 subscribedToCount: 1,
-                isSubscribed,
+                isSubscribed:1,
                 avatar: 1,
                 coverImage: 1,
             }
@@ -442,7 +451,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
 
 
 
-    const user = User.aggregate([
+    const user = await User.aggregate([
         {
             $match: {
                 _id: new mongoose.Types.ObjectId(req.user?._id)
@@ -452,14 +461,14 @@ const getWatchHistory = asyncHandler(async (req, res) => {
 
         {
             $lookup: {
-                field: "videos",
+                from: "videos",
                 localField: "watchHistory",
                 foreignField: "_id",
                 as: "watchHistory",
                 pipeline: [
                     {
                         $lookup: {
-                            field: "users",
+                            from: "users",
                             localField: "owner",
                             foreignField: "_id",
                             as: "owner",

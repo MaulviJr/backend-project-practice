@@ -36,6 +36,9 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Video"
 
+    },
+    refreshToken: {
+        type: String,
     }
 
 },{timestamps:true});
@@ -51,7 +54,8 @@ userSchema.methods.isPasswordCorrect= async function (password) {
     console.log("I am checking password: ", password)
    return await bcrypt.compare(password, this.password);
 }
-userSchema.methods.generateAccessToken= function() {
+userSchema.methods.generateAccessToken = function() {
+    console.log("generating token");
  return   jwt.sign({
         _id: this._id,
         email:this.email,
