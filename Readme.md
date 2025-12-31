@@ -1,4 +1,4 @@
-# Backend Practice Project
+# Backend Practice Project (Under Dev)
 
 A comprehensive backend system built with **Node.js**, **Express**, and **MongoDB**, following industry best practices for building scalable and secure REST APIs. This project is part of a learning journey inspired by "Chai aur Code" by Hitesh Choudhary.
 
