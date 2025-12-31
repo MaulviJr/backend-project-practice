@@ -1,5 +1,3 @@
-Based on the project files you've shared, here is a comprehensive and professional `README.md` file tailored for your backend practice project.
-
 # Backend Practice Project
 
 A comprehensive backend system built with **Node.js**, **Express**, and **MongoDB**, following industry best practices for building scalable and secure REST APIs. This project is part of a learning journey inspired by "Chai aur Code" by Hitesh Choudhary.
