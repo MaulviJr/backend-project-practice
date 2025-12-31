@@ -27,13 +27,29 @@ const uploadOnCloudinary = async (localFilePath)=>{
     }
 }
 
-const deleteOnCloudinary=async(oldFileUrl)=>{
-    if(!oldFileUrl) {
-      throw new ApiError(400,"No Url Provided");
+const deleteOnCloudinary = async (oldFileUrl) => {
+    try {
+        if (!oldFileUrl) return null;
+
+        // 1. Extract public ID from the URL
+        // Example: https://res.cloudinary.com/demo/image/upload/v163/sample.jpg -> 'sample'
+        const publicId = oldFileUrl.split("/").pop().split(".")[0];
+        
+        // 2. Determine the resource type (optional, defaults to 'image')
+        // If your URL contains '/video/', you should pass resource_type: "video"
+        const resourceType = oldFileUrl.includes("/video/") ? "video" : "image";
+        
+        // 3. Delete from Cloudinary
+        const response = await cloudinary.uploader.destroy(publicId, {
+            resource_type: resourceType
+        });
+
+        return response;
+    } catch (error) {
+        console.error("Error deleting file from Cloudinary:", error);
+        return null;
     }
-
-    
-}
+};
 
 
-export {uploadOnCloudinary}
+export {uploadOnCloudinary,deleteOnCloudinary}
