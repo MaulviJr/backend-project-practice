@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import express, { request } from 'express'
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { deleteOnCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt, { decode } from 'jsonwebtoken'
 import mongoose from "mongoose";
@@ -35,7 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     console.log("checking existing user", existingUser);
     console.log("req.files: ", req.files);
-    const avatarLocalPath = req.files?.avatar[0]?.path
+    const avatarLocalPath = req.files?.avatar[0]?.path;
     const coverImageLocalPath = req.files?.coverImage[0]?.path
     console.log("checking req.files", req.files);
     console.log("avatar local path: ", avatarLocalPath)
@@ -299,7 +299,8 @@ const updateUserDetails = asyncHandler(async (req, res) => {
 
 const updateAvatar = asyncHandler(async (req, res) => {
     // delete old image
-
+    const user = User.findById(req.user?._id);
+    await deleteOnCloudinary(user.avatar);
 
     const avatarfilePath = req.file?.path
     if (!avatarfilePath) {

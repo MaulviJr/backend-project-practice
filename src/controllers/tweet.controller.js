@@ -36,6 +36,10 @@ const createTweet = asyncHandler(async (req, res) => {
 const getUserTweets = asyncHandler(async (req, res) => {
     const {userId} = req.params
 
+    if (!mongoose.isValidObjectId(userId)) {
+        throw new ApiError(400, "Invalid user ID format");
+    }
+
     // grab user id,
     // then traverse through the tweets and pick up the ones whose user id matches the owner.
 
@@ -64,6 +68,10 @@ const updateTweet = asyncHandler(async (req, res) => {
     // update
 
     const {tweetId} = req.params
+
+    if (!mongoose.isValidObjectId(tweetId)) {
+        throw new ApiError(400, "Invalid Tweet ID format");
+    }
     const {content} = req.body
     const getTweet = await Tweet.findById(tweetId);
 
@@ -71,7 +79,8 @@ const updateTweet = asyncHandler(async (req, res) => {
         throw new ApiError(404, "There was some error fetching the tweet")
     }
         // check if current user is the owner of the tweet
-    if(!(getTweet.owner === req.user?._id)) {
+      
+    if(!(getTweet.owner.equals(req.user.id))) {
         throw new ApiError(400,"The User is not the owner of the tweet")
     };
     
@@ -97,11 +106,24 @@ const deleteTweet = asyncHandler(async (req, res) => {
     //TODO: delete tweet
     const {tweetId} = req.params
 
-    const deletedTweet=await Tweet.findByIdAndDelete(tweetId);
-    
-    if(!deletedTweet) {
-        throw new ApiError(400,"There was some error while deleting the Tweet")
+    if (!mongoose.isValidObjectId(tweetId)) {
+        throw new ApiError(400, "Invalid Tweet ID format");
     }
+
+     const getTweet = await Tweet.findById(tweetId);
+
+       if(!getTweet) {
+        throw new ApiError(404, "There was some error fetching the tweet")
+    }
+
+    console.log("req.user : ", req.user);
+    console.log("get tweet oiwner", getTweet);
+    
+    if(!(getTweet.owner.equals(req.user.id))) {
+        throw new ApiError(400,"The User is not the owner of the tweet")
+    };
+
+       const deletedTweet=await Tweet.findByIdAndDelete(tweetId);
 
     return res.status(200)
     .json(
