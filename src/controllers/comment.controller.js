@@ -111,6 +111,11 @@ const updateComment = asyncHandler(async (req, res) => {
         throw new ApiError(400,"Couldn't fetch Comment");
    }
 
+   // AUTHORIZATION: Check if the user owns the comment
+    if (updateComment.owner.toString() !== req.user?._id.toString()) {
+        throw new ApiError(403, "You do not have permission to edit this comment");
+    }
+
    updateComment.content = content;
 
    await updateComment.save()
