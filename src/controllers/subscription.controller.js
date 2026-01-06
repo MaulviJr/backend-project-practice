@@ -1,4 +1,4 @@
-import mongoose, { isValidObjectId } from "mongoose"
+import mongoose from "mongoose"
 import { User } from "../models/user.model.js"
 import { Subscription } from "../models/subscription.model.js"
 import { ApiError } from "../utils/ApiError.js"
