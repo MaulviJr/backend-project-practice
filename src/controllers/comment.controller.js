@@ -18,7 +18,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
             $lookup: {
                 from: "users",
                 localField:"owner",
-                foriegnField:"_id",
+                foreignField:"_id",
                 as: "owner",
                 pipeline:[
                     {
@@ -33,8 +33,8 @@ const getVideoComments = asyncHandler(async (req, res) => {
             }
         },
         {
-            $addfields:{
-                $first:"$owner"
+            $addFields:{
+                owner: { $first: "$owner" }
             }
         },
         {

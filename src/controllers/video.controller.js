@@ -40,9 +40,10 @@ const publishAVideo = asyncHandler(async (req, res) => {
     // save that all to DB through Video.create
 
     const { title, description } = req.body
+   
 
     const user = await User.findById(req.user?._id);
-
+    // console.log(req);
     const thumbnailLocalFilePath = req.files?.thumbnail[0]?.path;
     const videoLocalFilePath = req.files?.videoFile[0]?.path;
     
@@ -72,7 +73,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
             thumbnail: thumbnail.url,
             videoFile: video.url,
             duration: video.duration,
-            owner: user
+            owner: req.user?.id
         }
 
     )
