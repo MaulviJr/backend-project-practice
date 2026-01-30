@@ -32,7 +32,7 @@ app.use("/api/v1/tweets",tweetRouter);
 app.use("/api/v1/subscription",subscriptionRouter);
 app.use("/api/v1/comments", commentRouter)
 app.use("/api/v1/likes", likeRouter)
-app.use("/api/v1/playlist", playlistRouter)
+app.use("/api/v1/playlists", playlistRouter)
 app.use("/api/v1/dashboard", dashboardRouter)
 app.use("/api/v1/healthcheck", healthcheckRouter)
 
