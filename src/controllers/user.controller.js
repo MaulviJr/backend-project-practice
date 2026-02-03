@@ -35,8 +35,8 @@ const registerUser = asyncHandler(async (req, res) => {
 
     console.log("checking existing user", existingUser);
     console.log("req.files: ", req.files);
-    const avatarLocalPath = req.files?.avatar[0]?.path;
-    const coverImageLocalPath = req.files?.coverImage[0]?.path
+    const avatarLocalPath = req.files?.avatar?.[0]?.path;
+    const coverImageLocalPath = req.files?.coverImage?.[0]?.path
     console.log("checking req.files", req.files);
     console.log("avatar local path: ", avatarLocalPath)
     if (!avatarLocalPath) {
