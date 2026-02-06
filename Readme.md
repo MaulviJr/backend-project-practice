@@ -1,4 +1,4 @@
-# Backend Practice Project - A YT-Twitter Clone (Under Dev)
+# Backend Practice Project - A YT-Twitter Clone 
 
 This project is a comprehensive video-sharing platform backend built with **Node.js**, **Express**, and **MongoDB**. It follows industry best practices for modular architecture, secure authentication, and scalable file handling. This project is part of a learning journey inspired by "Chai aur Code".
 
