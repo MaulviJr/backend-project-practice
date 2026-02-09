@@ -210,6 +210,26 @@ const updateVideo = asyncHandler(async (req, res) => {
 
 })
 
+const updateVideoViews = asyncHandler(async (req, res) => {
+    const { videoId } = req.params;
+
+    // Use $inc to atomically increment the views field
+    const video = await Video.findByIdAndUpdate(
+        videoId,
+        {
+            $inc: { views: 1 }
+        },
+        { new: true }
+    );
+
+    if (!video) {
+        throw new ApiError(404, "Video not found");
+    }
+
+    return res.status(200)
+        .json(new ApiResponse(200, video.views, "Views updated successfully"));
+});
+
 const deleteVideo = asyncHandler(async (req,res)=>{
     const {videoId} = req.params;
 
@@ -261,5 +281,6 @@ export {
     getAllVideos,
     updateVideo,
     deleteVideo,
-    togglePublishStatus
+    togglePublishStatus,
+    updateVideoViews
 }
