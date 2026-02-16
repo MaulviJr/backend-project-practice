@@ -13,7 +13,59 @@ const getVideoById = asyncHandler(async (req, res) => {
 
     const { videoId } = req.params;
 
-    const videofetched = await Video.findById(videoId);
+    // const videofetched = await Video.findById(videoId);
+
+    const videofetched = await Video.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(videoId)
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
+                pipeline: [
+                    {
+                        $lookup: {
+                            from: "subscriptions",
+                            localField: "_id",
+                            foreignField: "channel",
+                            as: "subscribers"
+                        }
+                    },
+                    {
+                        $addFields: {
+                            subscribersCount: {
+                                $size: "$subscribers"
+                            },
+                            isSubscribed: {
+                                $cond: {
+                                    if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+                                    then: true,
+                                    else: false
+                                }
+                            }
+                        }
+                    },
+                    {
+                        $project: {
+                            fullName: 1,
+                            username: 1,
+                            avatar: 1,
+                            subscribersCount: 1,
+                            isSubscribed: 1
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $unwind: "$owner"
+        }
+    ]);
 
     if (!videofetched) {
         throw new ApiError(400, "Can't fetch video");
