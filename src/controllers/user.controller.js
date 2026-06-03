@@ -119,10 +119,11 @@ console.log("Login Payload from Frontend: ", req.body);
         throw new ApiError(400, "user doesnt exists")
     }
 
-    const options = {
-        httpOnly: true,
-        secure: true
-    }
+   const options = {
+    httpOnly: true,
+    secure: true, 
+    sameSite: "none" // This is the magic word for cross-domain cookies
+}
 
     const isPassValid = await user.isPasswordCorrect(password);
     console.log("password", password);
@@ -157,10 +158,10 @@ const logoutUser = asyncHandler(async (req, res) => {
     // const user= await User.findById(req.user._id);
 
     const options = {
-        httpOnly: true,
-        secure: true
-    }
-
+    httpOnly: true,
+    secure: true, 
+    sameSite: "none" // This is the magic word for cross-domain cookies
+}
 
     await User.findByIdAndUpdate(
         req.user._id,
@@ -207,9 +208,10 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     //generate new referesh token
 
     const options = {
-        httpOnly: true,
-        secure: true
-    }
+    httpOnly: true,
+    secure: true, 
+    sameSite: "none" // This is the magic word for cross-domain cookies
+}
     
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id)
    
