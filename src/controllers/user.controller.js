@@ -103,7 +103,7 @@ const loginUser = asyncHandler(async (req, res) => {
     // pass check
     // access and refresh token
     // send cookie
-
+onsole.log("Login Payload from Frontend: ", req.body);
     const { fullName, username, password, email } = req.body;
 
     if (!(username || email)) {
